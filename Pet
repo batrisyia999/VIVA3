@@ -1,0 +1,54 @@
+public class Pet {
+
+    String name, species, breed;
+    int age;
+    String healthRecord, adopterName;
+    boolean isAdopted;
+
+
+    public Pet(String name, String species, String breed, int age, String healthRecord) {
+        this.name = name;               
+        this.species = species;         
+        this.breed = breed;            
+        this.age = age;               
+        this.healthRecord = healthRecord; 
+        this.isAdopted = false;         
+        this.adopterName = null;        
+    }
+
+    // Method to adopt the pet
+    public void adopt(String adopterName) {
+        if (!isAdopted) {
+            isAdopted = true;           // if the pet adopted, true
+            this.adopterName = adopterName; //set the adopter's name
+        }
+    }
+
+    // Method to get a string with all the details of the pet
+    public String getDetails() {
+        return ("PetName: " + name +
+                "\nSpecies: " + species +
+                "\nBreed: " + breed +
+                "\nAge: " + age +
+                "\nHealthRecord: " + healthRecord +
+                "\nAdopted: " + (isAdopted ? "adopted" : "not adopted") +
+                "\nAdopterName: " + (adopterName == null ? "null" : adopterName) +
+                "\n");
+    }
+  
+    public String getSpecies() {
+        return species;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isAdopted() {
+        return isAdopted;
+    }
+}
