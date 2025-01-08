@@ -1,0 +1,59 @@
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+public class PetAdoptionCentre {
+
+    List<Pet> pets; 
+
+    //to initialize the pet list
+    public PetAdoptionCentre() {
+        pets = new ArrayList<>();
+    }
+
+    // Method to add a new pet to the centre
+    public void addPet(Pet pet) {
+        pets.add(pet); // Add the pet to the list
+    }
+
+    // Method to handle the adoption process
+    public void adoptPet(Pet pet, Adopter adopter) {
+        if (pet == null) {
+            System.out.println("Adoption fail"); 
+            return;
+        }
+        if (!pet.isAdopted()) {
+            pet.adopt(adopter.name); // Mark the pet as adopted
+        }
+    }
+
+    // Method to view all available pets (not adopted), sorted by age
+    public void viewAvailablePets() {
+        pets.stream()
+            .filter(pet -> !pet.isAdopted()) // Only include pets not adopted
+            .sorted(Comparator.comparingInt(Pet::getAge)) // Sort pets by age
+            .forEach(pet -> System.out.println(pet.getDetails())); // Print each pet's details
+    }
+
+    // Method to find a pet by its name
+    public Pet getPetByName(String petName) {
+        for (Pet pet : pets) {
+            if (pet.getName().equalsIgnoreCase(petName)) {
+                return pet; // Return the pet if the name matches
+            }
+        }
+        return null; // Return null if no matching pet is found
+    }
+
+    // Method to get all available pets matching a specific species and age range
+    public List<Pet> getAvailablePets(String species, int minAge, int maxAge) {
+        List<Pet> result = new ArrayList<>();
+        for (Pet pet : pets) {
+            if (!pet.isAdopted() && 
+                pet.getSpecies().equalsIgnoreCase(species) &&
+                pet.getAge() >= minAge && pet.getAge() <= maxAge) {
+                result.add(pet); // Add matching pets to the result list
+            }
+        }
+        return result;
+    }
+}
