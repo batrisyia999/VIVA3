@@ -1,0 +1,189 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ */
+
+package com.mycompany.petadoptiontest;
+
+/**
+ *
+ * @author batrisyia
+ */
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Comparator;
+
+
+class Pet {
+   
+    String name, species, breed;
+    int age;
+    String healthRecord, adopterName;
+    boolean isAdopted;
+
+
+    public Pet(String name, String species, String breed, int age, String healthRecord) {
+        this.name = name;               
+        this.species = species;         
+        this.breed = breed;            
+        this.age = age;               
+        this.healthRecord = healthRecord; 
+        this.isAdopted = false;         
+        this.adopterName = null;        
+    }
+
+    // Method to adopt the pet
+    public void adopt(String adopterName) {
+        if (!isAdopted) {
+            isAdopted = true;           // if the pet adopted, true
+            this.adopterName = adopterName; //set the adopter's name
+        }
+    }
+
+    // Method to get a string with all the details of the pet
+    public String getDetails() {
+        return ("PetName: " + name +
+                "\nSpecies: " + species +
+                "\nBreed: " + breed +
+                "\nAge: " + age +
+                "\nHealthRecord: " + healthRecord +
+                "\nAdopted: " + (isAdopted ? "adopted" : "not adopted") +
+                "\nAdopterName: " + (adopterName == null ? "null" : adopterName) +
+                "\n");
+    }
+  
+    public String getSpecies() {
+        return species;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isAdopted() {
+        return isAdopted;
+    }
+}
+
+// Adopter class to adopt a pet
+class Adopter {
+    String name, preferredSpecies;
+    String preferredAgeRange;
+
+    //to initialize adopter's details
+    public Adopter(String name, String preferredSpecies, String preferredAgeRange) {
+        this.name = name;                  
+        this.preferredSpecies = preferredSpecies;
+        this.preferredAgeRange = preferredAgeRange; 
+    }
+
+    // Method to view matching pets based on adopter's preferences
+    public void viewMatchingPets(PetAdoptionCentre centre) {
+        // Parse the preferred age range into minimum and maximum values
+        int minAge = Integer.parseInt(preferredAgeRange.split("-")[0]);
+        int maxAge = Integer.parseInt(preferredAgeRange.split("-")[1]);
+
+        // Get the list of matching pets
+        List<Pet> matchingPets = centre.getAvailablePets(preferredSpecies, minAge, maxAge);
+        if (matchingPets.isEmpty()) {
+            System.out.println("No matching pets found");
+        } else {
+            for (Pet pet : matchingPets) {
+                System.out.println(pet.getDetails());
+            }
+        }
+    }
+}
+
+// PetAdoptionCentre class to manage the list of pets and the adoption process
+class PetAdoptionCentre {
+    List<Pet> pets; 
+
+    //to initialize the pet list
+    public PetAdoptionCentre() {
+        pets = new ArrayList<>();
+    }
+
+    // Method to add a new pet to the centre
+    public void addPet(Pet pet) {
+        pets.add(pet); // Add the pet to the list
+    }
+
+    // Method to handle the adoption process
+    public void adoptPet(Pet pet, Adopter adopter) {
+        if (pet == null) {
+            System.out.println("Adoption fail"); 
+            return;
+        }
+        if (!pet.isAdopted()) {
+            pet.adopt(adopter.name); // Mark the pet as adopted
+        }
+    }
+
+    // Method to view all available pets (not adopted), sorted by age
+    public void viewAvailablePets() {
+        pets.stream()
+            .filter(pet -> !pet.isAdopted()) // Only include pets not adopted
+            .sorted(Comparator.comparingInt(Pet::getAge)) // Sort pets by age
+            .forEach(pet -> System.out.println(pet.getDetails())); // Print each pet's details
+    }
+
+    // Method to find a pet by its name
+    public Pet getPetByName(String petName) {
+        for (Pet pet : pets) {
+            if (pet.getName().equalsIgnoreCase(petName)) {
+                return pet; // Return the pet if the name matches
+            }
+        }
+        return null; // Return null if no matching pet is found
+    }
+
+    // Method to get all available pets matching a specific species and age range
+    public List<Pet> getAvailablePets(String species, int minAge, int maxAge) {
+        List<Pet> result = new ArrayList<>();
+        for (Pet pet : pets) {
+            if (!pet.isAdopted() && 
+                pet.getSpecies().equalsIgnoreCase(species) &&
+                pet.getAge() >= minAge && pet.getAge() <= maxAge) {
+                result.add(pet); // Add matching pets to the result list
+            }
+        }
+        return result;
+    }
+}
+
+
+    public class PetAdoptionTest {  
+        public static void main(String[] args) {          
+             PetAdoptionCentre centre = new PetAdoptionCentre();  
+             
+            // Adding pets to the centre  
+            centre.addPet(new Pet("Buddy", "Dog", "Labrador", 3, "Healthy"));  
+            centre.addPet(new Pet("Whiskers", "Cat", "Siamese", 2, " Vaccinated"));  
+            centre.addPet(new Pet("Spike","Parrot","Macaw", 4,"Needs checkup"));
+            
+            
+            // Viewing available pets  
+            System.out.println("Available pets:");  
+            centre.viewAvailablePets();  
+            
+            // Adopter matching and adoption process  
+            Adopter adopter1 = new Adopter("John", "Dog", "1-4");  
+            System.out.println("\nMatching pets for John:");  
+            adopter1.viewMatchingPets(centre);  
+            
+            System.out.println("\nJohn adopts Buddy:");  
+            centre.adoptPet(centre.getPetByName("Buddy"),adopter1);
+            System.out.println("\nAvailable pets after adoption:");  
+            centre.viewAvailablePets();  
+            
+        }  
+    }
+        
+
+
+
+
